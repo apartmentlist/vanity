@@ -195,6 +195,16 @@ class AbTestTest < ActionController::TestCase
     assert !(new_ab_test :test, :enable => false).enabled?
   end
   
+  def test_cannot_set_enabled_before_saving
+    test = new_ab_test :test, :save => false, :enable => false
+    test.enabled = true
+    assert !test.enabled?
+    
+    test.save
+    test.enabled = true
+    assert test.enabled?
+  end
+  
   def test_complete_sets_enabled_false
     Vanity.playground.collecting = true
     exp = new_ab_test :test
