@@ -101,10 +101,11 @@ class Test::Unit::TestCase
   # means to not set enabled at all (the 'actual' behavior).
   def new_ab_test(name, options = {}, &block)
     enable = options.fetch(:enable, true)
+    save = options.fetch(:save, true)
     id = name.to_s.downcase.gsub(/\W/, "_").to_sym
     experiment = Vanity::Experiment::AbTest.new(Vanity.playground, id, name)
     experiment.instance_eval &block if block
-    experiment.save
+    experiment.save if save
     # new experiments start off as disabled, enable them for testing
     experiment.enabled = true if enable
     Vanity.playground.experiments[id] = experiment
